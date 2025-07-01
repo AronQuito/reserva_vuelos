@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reserva de Asientos</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>Selecciona tu Asiento</h1>
+  <form method="POST" action="/reservar">
+    <input type="hidden" name="vuelo" value="vuelo_123">
+    <label>Nombre:</label>
+    <input name="nombre" required><br><br>
+    <div id="asientos"></div>
+    <input type="hidden" name="asiento" id="asientoSeleccionado">
+    <br><button type="submit">Reservar</button>
+  </form>
+
+<script>
+const contenedor = document.getElementById("asientos");
+fetch("/consultar")
+  .then(res => res.json())
+  .then(data => {
+    const asientos = data["vuelo_123"].asientos;
+    let html = "";
+    for (let asiento in asientos) {
+      const ocupado = asientos[asiento];
+      html += `<button type="button" class="${ocupado ? 'ocupado' : 'libre'}"
+               onclick="seleccionar('${asiento}', this)" ${ocupado ? 'disabled' : ''}>${asiento}</button> `;
+    }
+    contenedor.innerHTML = html;
+  });
+
+function seleccionar(asiento, btn) {
+  document.querySelectorAll('.libre').forEach(b => b.classList.remove("seleccionado"));
+  btn.classList.add("seleccionado");
+  document.getElementById("asientoSeleccionado").value = asiento;
+}
+</script>
+</body>
+</html>

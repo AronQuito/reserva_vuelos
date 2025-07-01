@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Panel Administrador</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>Panel del Administrador</h1>
+  <button onclick="reiniciar()">🔄 Reiniciar todos los asientos</button>
+  <div id="mapa"></div>
+
+<script>
+function actualizar() {
+  fetch("/consultar")
+    .then(res => res.json())
+    .then(data => {
+      const vuelo = data["vuelo_123"].asientos;
+      let html = '<table>';
+      for (let asiento in vuelo) {
+        const estado = vuelo[asiento];
+        html += `<tr>
+                   <td>${asiento}</td>
+                   <td>${estado || "Disponible"}</td>
+                   <td><button onclick="eliminar('${asiento}')">❌</button></td>
+                 </tr>`;
+      }
+      html += '</table>';
+      document.getElementById("mapa").innerHTML = html;
+    });
+}
+
+function eliminar(asiento) {
+  fetch("/eliminar", {
+    method: "POST",
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `vuelo=vuelo_123&asiento=${asiento}`
+  }).then(actualizar);
+}
+
+function reiniciar() {
+  fetch("/reiniciar", { method: "POST" }).then(actualizar);
+}
+
+setInterval(actualizar, 3000);
+actualizar();
+</script>
+</body>
+</html>
