@@ -1,24 +1,64 @@
-<div id="asientos"></div>
+<!-- templates/usuario.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reserva de Asientos</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <h1>Selecciona tu Asiento</h1>
 
-<script>
-const contenedor = document.getElementById("asientos");
-fetch("/consultar")
-  .then(res => res.json())
-  .then(data => {
-    const asientos = data["vuelo_123"].asientos;
-    let html = "";
-    for (let asiento in asientos) {
-      const ocupado = asientos[asiento];
-      html += `<button type="button" class="${ocupado ? 'ocupado' : 'libre'}"
-               onclick="seleccionar('${asiento}', this)" ${ocupado ? 'disabled' : ''}>
-               ${asiento}</button> `;
+  <form id="formReserva" method="POST" action="/reservar">
+    <input type="hidden" name="vuelo" value="vuelo_123">
+
+    <label for="nombre">Nombre:</label>
+    <input type="text" name="nombre" id="nombre" required>
+    <br><br>
+
+    <div id="asientos"></div>
+    <input type="hidden" name="asiento" id="asientoSeleccionado">
+
+    <br><button type="submit">Reservar</button>
+  </form>
+
+  <script>
+    // Carga los asientos desde el servidor
+    fetch("/consultar")
+      .then(res => res.json())
+      .then(data => {
+        const asientos = data["vuelo_123"].asientos;
+        let html = "";
+        for (let asiento in asientos) {
+          const ocupado = asientos[asiento];
+          html += `<button type="button" class="${ocupado ? 'ocupado' : 'libre'}"
+                     onclick="seleccionar('${asiento}', this)"
+                     ${ocupado ? 'disabled' : ''}>${asiento}</button> `;
+        }
+        document.getElementById("asientos").innerHTML = html;
+      });
+
+    // Manejo de seleccion de asiento
+    function seleccionar(asiento, boton) {
+      document.querySelectorAll(".libre").forEach(btn => btn.classList.remove("seleccionado"));
+      boton.classList.add("seleccionado");
+      document.getElementById("asientoSeleccionado").value = asiento;
     }
-    contenedor.innerHTML = html;
-  });
 
-function seleccionar(asiento, btn) {
-  document.querySelectorAll('.libre').forEach(b => b.classList.remove("seleccionado"));
-  btn.classList.add("seleccionado");
-  document.getElementById("asientoSeleccionado").value = asiento;
-}
-</script>
+    // Validar antes de enviar
+    document.getElementById("formReserva").addEventListener("submit", function(e) {
+      const asiento = document.getElementById("asientoSeleccionado").value;
+      const nombre = document.getElementById("nombre").value.trim();
+
+      if (!asiento) {
+        alert("Por favor selecciona un asiento disponible.");
+        e.preventDefault();
+      } else if (!nombre) {
+        alert("Por favor ingresa tu nombre.");
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
+
