@@ -6,6 +6,12 @@ app = Flask(__name__, template_folder="../templates")  # Ajusta ruta si server.p
 datos = VuelosData()
 
 # Página para el usuario (reservar asiento)
+@app.route("/consultar")
+def consultar():
+    vuelos = datos.leer_vuelos()
+    return jsonify(vuelos)
+
+
 @app.route("/usuario")
 def usuario():
     vuelos = datos.leer_vuelos()
@@ -36,6 +42,18 @@ def reiniciar():
 @app.route("/")
 def home():
     return render_template("index.html")
+
+def leer_vuelos(self):
+    self.lectura.acquire()
+    vuelos_copia = {
+        vuelo: {
+            "asientos": self.vuelos[vuelo]["asientos"].copy()
+        }
+        for vuelo in self.vuelos
+    }
+    self.lectura.release()
+    return vuelos_copia
+
 
 # Puerto dinámico (para Render)
 if __name__ == "__main__":
