@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head><title>Disponibilidad en Tiempo Real</title></head>
+<body>
+  <h1>Disponibilidad del vuelo</h1>
+  <div id="estado"></div>
+
+  <script>
+    function actualizar() {
+      fetch("/consultar")
+        .then(res => res.json())
+        .then(data => {
+          let asientos = data["vuelo_123"]["asientos"];
+          let html = "<ul>";
+          for (let asiento in asientos) {
+            html += `<li>${asiento}: ${asientos[asiento] || "Disponible"}</li>`;
+          }
+          html += "</ul>";
+          document.getElementById("estado").innerHTML = html;
+        });
+    }
+
+    setInterval(actualizar, 3000);
+    actualizar(); // primera carga
+  </script>
+</body>
+</html>
