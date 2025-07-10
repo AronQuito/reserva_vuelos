@@ -78,7 +78,7 @@
         if (seatCount % seatsPerRow !== 0) {
           asientosDiv.appendChild(rowDiv);
         }
-      });\n
+      });
     function seleccionar(asiento, boton) {
       document.querySelectorAll(".seat.selected").forEach(btn => btn.classList.remove("selected"));
       boton.classList.add("seleccionado");
