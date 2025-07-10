@@ -1,37 +1,79 @@
-<div id="mapa"></div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KTARI AIRLINE - Administración</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Panel de Administración</h1>
+            <p>Gestión de Asientos y Reservas</p>
+        </header>
 
-<script>
-function actualizar() {
-  fetch("/consultar")
-    .then(res => res.json())
-    .then(data => {
-      const vuelo = data["vuelo_123"].asientos;
-      let html = '<table border="1"><tr><th>Asiento</th><th>Estado</th><th>Acción</th></tr>';
-      for (let asiento in vuelo) {
-        const estado = vuelo[asiento];
-        html += `<tr>
-                   <td>${asiento}</td>
-                   <td>${estado ? estado : "Disponible"}</td>
-                   <td>${estado ? `<button onclick="eliminar('${asiento}')">❌</button>` : "-"}</td>
-                 </tr>`;
-      }
-      html += '</table>';
-      document.getElementById("mapa").innerHTML = html;
-    });
-}
+        <main>
+            <h2>Estado de las Reservas</h2>
+            <div id="mapa">
+                <!-- La tabla de reservas se cargará aquí -->
+            </div>
+            <button onclick="reiniciar()" class="reset-button">Reiniciar Todas las Reservas</button>
+        </main>
 
-function eliminar(asiento) {
-  fetch("/eliminar", {
-    method: "POST",
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `vuelo=vuelo_123&asiento=${asiento}`
-  }).then(actualizar);
-}
+        <footer>
+            <p>&copy; 2024 Sistema de Reservas de Vuelos</p>
+        </footer>
+    </div>
 
-function reiniciar() {
-  fetch("/reiniciar", { method: "POST" }).then(actualizar);
-}
+    <script>
+        function actualizar() {
+            fetch("/consultar")
+                .then(res => res.json())
+                .then(data => {
+                    const vuelo = data["vuelo_123"].asientos;
+                    let html = '<table><thead><tr><th>Asiento</th><th>Pasajero</th><th>Acción</th></tr></thead><tbody>';
+                    for (let asiento in vuelo) {
+                        const pasajero = vuelo[asiento];
+                        html += `<tr>
+                                     <td>${asiento}</td>
+                                     <td>${pasajero ? pasajero : "Disponible"}</td>
+                                     <td>${pasajero ? `<button onclick="eliminar('${asiento}')" class="delete-button">Cancelar</button>` : "-"}</td>
+                                 </tr>`;
+                    }
+                    html += '</tbody></table>';
+                    document.getElementById("mapa").innerHTML = html;
+                });
+        }
 
-setInterval(actualizar, 3000);
-actualizar();
-</script>
+        function eliminar(asiento) {
+            if (confirm(`¿Estás seguro de que quieres cancelar la reserva del asiento ${asiento}?`)) {
+                fetch("/eliminar", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `vuelo=vuelo_123&asiento=${asiento}`
+                }).then(actualizar);
+            }
+        }
+
+        function reiniciar() {
+            if (confirm("¿Estás seguro de que quieres reiniciar TODAS las reservas? Esta acción es irreversible.")) {
+                fetch("/reiniciar", { method: "POST" })
+                .then(response => {
+                    if(response.ok) {
+                        actualizar();
+                    } else {
+                        alert("Error al reiniciar las reservas.");
+                    }
+                });
+            }
+        }
+
+        // Carga inicial y actualización periódica
+        document.addEventListener('DOMContentLoaded', function() {
+            actualizar();
+            setInterval(actualizar, 5000); // Actualiza cada 5 segundos
+        });
+    </script>
+</body>
+</html>

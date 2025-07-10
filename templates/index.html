@@ -1,30 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="2;url=/usuario">
-  <title>Redirigiendo a reservas...</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding-top: 100px;
-      background-color: #f2f2f2;
-    }
-    .card {
-      background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      display: inline-block;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KTARI AIRLINE - Bienvenido</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="card">
-    <h2>Bienvenido al sistema de reservas</h2>
-    <p>Redirigiéndote a la página de usuario...</p>
-    <p><a href="/usuario">Haz clic aquí si no eres redirigido automáticamente</a></p>
-  </div>
+    <div class="container">
+        <header>
+            <h1>KTARI AIRLINE</h1>
+            <p>Vuela con Comodidad y Estilo</p>
+        </header>
+
+        <nav>
+            <a href="/" class="btn-primary">Inicio</a>
+            <a href="/usuario" class="btn-primary">Reservas</a>
+            <a href="/admin" class="btn-primary">Admin</a>
+        </nav>
+
+        <main>
+            <h2>Bienvenido a Bordo</h2>
+            <p>Tu viaje comienza aquí. Encuentra y reserva tu vuelo perfecto fácilmente.</p>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Sistema de Reservas de Vuelos. Todos los derechos reservados.</p>
+        </footer>
+    </div>
 </body>
 </html>
