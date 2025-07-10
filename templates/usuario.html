@@ -1,29 +1,33 @@
-<!-- templates/usuario.html -->
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+  <meta charset="UTF-8">
   <title>Reserva de Asientos</title>
-  <link rel="stylesheet" href="/static/style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>Selecciona tu Asiento</h1>
+  <header>
+    <h1>✈️ Sistema de Reserva de Asientos</h1>
+  </header>
 
-  <form id="formReserva" method="POST" action="/reservar">
-    <input type="hidden" name="vuelo" value="vuelo_123">
+  <main>
+    <form id="formReserva" method="POST" action="/reservar">
+      <input type="hidden" name="vuelo" value="vuelo_123">
 
-    <label for="nombre">Nombre:</label>
-    <input type="text" name="nombre" id="nombre" required>
-    <br><br>
+      <div class="form-group">
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" id="nombre" required placeholder="Ingresa tu nombre">
+      </div>
 
-    <div id="asientos"></div>
-    <input type="hidden" name="asiento" id="asientoSeleccionado">
+      <div id="asientos" class="asientos-grid"></div>
+      <input type="hidden" name="asiento" id="asientoSeleccionado">
 
-    <br><button type="submit">Reservar</button>
-  </form>
+      <button type="submit" class="btn-reservar">Reservar Asiento</button>
+    </form>
+  </main>
 
   <script>
-    // Carga los asientos desde el servidor
     fetch("/consultar")
       .then(res => res.json())
       .then(data => {
@@ -31,21 +35,23 @@
         let html = "";
         for (let asiento in asientos) {
           const ocupado = asientos[asiento];
-          html += `<button type="button" class="${ocupado ? 'ocupado' : 'libre'}"
-                     onclick="seleccionar('${asiento}', this)"
-                     ${ocupado ? 'disabled' : ''}>${asiento}</button> `;
+          html += `
+            <button type="button"
+                    class="asiento ${ocupado ? 'ocupado' : 'libre'}"
+                    onclick="seleccionar('${asiento}', this)"
+                    ${ocupado ? 'disabled' : ''}>
+              ${asiento}
+            </button>`;
         }
         document.getElementById("asientos").innerHTML = html;
       });
 
-    // Manejo de seleccion de asiento
     function seleccionar(asiento, boton) {
-      document.querySelectorAll(".libre").forEach(btn => btn.classList.remove("seleccionado"));
+      document.querySelectorAll(".asiento.libre").forEach(btn => btn.classList.remove("seleccionado"));
       boton.classList.add("seleccionado");
       document.getElementById("asientoSeleccionado").value = asiento;
     }
 
-    // Validar antes de enviar
     document.getElementById("formReserva").addEventListener("submit", function(e) {
       const asiento = document.getElementById("asientoSeleccionado").value;
       const nombre = document.getElementById("nombre").value.trim();
@@ -61,4 +67,3 @@
   </script>
 </body>
 </html>
-
