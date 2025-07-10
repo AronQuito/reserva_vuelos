@@ -1,35 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KTARI AIRLINE - Welcome</title>
+    <title>KTARI AIRLINE - Bienvenido</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <header>
-        <div class="container">
+    <div class="container">
+        <header>
             <h1>KTARI AIRLINE</h1>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/usuario">Reservas</a></li>
-                    <li><a href="/admin">Admin</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+            <p>Vuela con Comodidad y Estilo</p>
+        </header>
 
-    <main class="container hero">
-        <div class="hero-content">
-            <h2>Fly with Comfort and Style</h2>
-            <p>Your journey begins here. Find and book your perfect flight easily.</p>
-            <a href="/usuario" class="btn">Book Your Flight</a>
-        </div>
+        <nav>
+            <a href="/" class="btn-primary">Inicio</a>
+            <a href="/usuario" class="btn-primary">Reservas</a>
+            <a href="/admin" class="btn-primary">Admin</a>
+        </nav>
+
+        <main>
+            <h2>Bienvenido a Bordo</h2>
+            <p>Tu viaje comienza aquí. Encuentra y reserva tu vuelo perfecto fácilmente.</p>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Sistema de Reservas de Vuelos. Todos los derechos reservados.</p>
+        </footer>
     </div>
-    <footer>
-        <p>&copy; 2023 Sistema de Reservas de Vuelos</p>
-    </footer>
 </body>
 </html>
-

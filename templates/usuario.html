@@ -1,103 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KTARI AIRLINE - Reserva tu Asiento</title>
-  <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KTARI AIRLINE - Reserva tu Asiento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <header>
     <div class="container">
-      <h1>KTARI AIRLINE</h1>
-      <p>Reserva tu próximo vuelo con nosotros</p>
+        <header>
+            <h1>Reserva tu Asiento</h1>
+            <p>Selecciona un asiento disponible y completa tus datos para reservar.</p>
+        </header>
+
+        <form id="formReserva" method="POST" action="/reservar">
+            <input type="hidden" name="vuelo" value="vuelo_123">
+
+            <div class="form-group">
+                <label for="nombre">Nombre Completo:</label>
+                <input type="text" name="nombre" id="nombre" placeholder="Tu nombre aquí..." required>
+            </div>
+
+            <div class="seat-layout" id="asientos">
+                <!-- Asientos se cargarán aquí dinámicamente -->
+            </div>
+
+            <input type="hidden" name="asiento" id="asientoSeleccionado">
+
+            <button type="submit" class="btn-primary">Confirmar Reserva</button>
+        </form>
+
+        <footer>
+            <p>&copy; 2024 Sistema de Reservas de Vuelos</p>
+        </footer>
     </div>
-  </header>
 
-  <main class="container">
-    <h2>Selecciona tu Asiento</h2>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch("/consultar")
+                .then(response => response.json())
+                .then(data => {
+                    const asientos = data["vuelo_123"].asientos;
+                    const asientosContainer = document.getElementById("asientos");
+                    
+                    for (let numeroAsiento in asientos) {
+                        const ocupado = asientos[numeroAsiento];
+                        const seatElement = document.createElement('div');
+                        seatElement.classList.add('seat');
+                        seatElement.textContent = numeroAsiento;
+                        
+                        if (ocupado) {
+                            seatElement.classList.add('ocupado');
+                        } else {
+                            seatElement.classList.add('available');
+                            seatElement.addEventListener('click', () => seleccionarAsiento(seatElement, numeroAsiento));
+                        }
+                        
+                        asientosContainer.appendChild(seatElement);
+                    }
+                });
+        });
 
-    <form id="formReserva" method="POST" action="/reservar">
-      <input type="hidden" name="vuelo" value="vuelo_123">
+        function seleccionarAsiento(seatElement, numeroAsiento) {
+            // Deseleccionar cualquier asiento previamente seleccionado
+            document.querySelectorAll('.seat.seleccionado').forEach(el => {
+                el.classList.remove('seleccionado');
+            });
 
-      <div class="form-group">
-        <label for="nombre">Nombre Completo:</label>
-        <input type="text" name="nombre" id="nombre" required>
-      </div>
-
-      <div class="seat-map">
-        <h3>Mapa de Asientos</h3>
-        <div id="asientos" class="seat-layout"></div>
-      </div>
-
-      <input type="hidden" name="asiento" id="asientoSeleccionado">
-
-      <button type="submit" class="btn-primary">Confirmar Reserva</button>
-    </form>
-  </main>
-
-  <footer>
-    <div class="container">
-      <p>&copy; 2023 KTARI AIRLINE. Todos los derechos reservados.</p>
-    </div>
-  </footer>
-
-  <script>
-    // Fetch seats from the server
-    fetch("/consultar")
-      .then(res => res.json())
-      .then(data => {
-        const asientos = data["vuelo_123"].asientos;
-        const asientosDiv = document.getElementById("asientos");
-        let html = "";
-        // Assuming a simple row layout, you might need to adjust this based on your data structure
-        const seatsPerRow = 10; // Example number of seats per row
-        let rowDiv = document.createElement('div');
-        rowDiv.classList.add('seat-row');
-        let seatCount = 0;
-        for (let asiento in asientos) {
-          const ocupado = asientos[asiento];
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.classList.add('seat');
-          button.classList.add(ocupado ? 'occupied' : 'available');
-          button.textContent = asiento;
-          button.onclick = () => seleccionar(asiento, button);
-          if (ocupado) {
-            button.disabled = true;
-          }
-          rowDiv.appendChild(button);
-          seatCount++;
-          if (seatCount % seatsPerRow === 0) {
-            asientosDiv.appendChild(rowDiv);
-            rowDiv = document.createElement('div');
-            rowDiv.classList.add('seat-row');
-          }
+            // Seleccionar el nuevo asiento
+            seatElement.classList.add('seleccionado');
+            document.getElementById('asientoSeleccionado').value = numeroAsiento;
         }
-        // Append the last row if it's not full
-        if (seatCount % seatsPerRow !== 0) {
-          asientosDiv.appendChild(rowDiv);
-        }
-      });
-    function seleccionar(asiento, boton) {
-      document.querySelectorAll(".seat.selected").forEach(btn => btn.classList.remove("selected"));
-      boton.classList.add("seleccionado");
-      document.getElementById("asientoSeleccionado").value = asiento;
-    }
 
-    document.getElementById("formReserva").addEventListener("submit", function(e) {
-      const asiento = document.getElementById("asientoSeleccionado").value;
-      const nombre = document.getElementById("nombre").value.trim();
+        document.getElementById("formReserva").addEventListener("submit", function(e) {
+            const asiento = document.getElementById("asientoSeleccionado").value;
+            const nombre = document.getElementById("nombre").value.trim();
 
-      if (!asiento) {
-        alert("Por favor selecciona un asiento disponible.");
-        e.preventDefault();
-      } else if (!nombre) {
-        alert("Por favor ingresa tu nombre.");
-        e.preventDefault();
-      }
-    });
-  </script>
+            if (!asiento) {
+                alert("Por favor, selecciona un asiento.");
+                e.preventDefault();
+            } else if (!nombre) {
+                alert("Por favor, ingresa tu nombre.");
+                e.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>
-

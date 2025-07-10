@@ -1,203 +1,163 @@
+/* General Body Styles */
 body {
-  font-family: sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f8f8f8;
-  color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
 }
 
-button {
-  margin: 5px;
-  padding: 10px 15px;
-  border: 1px solid #007bff;
-  border-radius: 6px;
-  cursor: pointer;
-  background-color: #007bff;
-  color: white;
-  font-size: 1em;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+/* Container */
+.container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    max-width: 900px;
+    width: 100%;
 }
 
-.libre {
-  background-color: #e0ffe0;
-  border-color: #a0d0a0;
-  color: #333;
+/* Header */
+header h1, header p {
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
-.ocupado {
-  background-color: #ffe0e0;
-  border-color: #d0a0a0;
-  color: #555;
-  cursor: not-allowed;
-  opacity: 0.7;
+/* Buttons */
+button, .btn-primary {
+    background: linear-gradient(45deg, #fe6b8b 30%, #ff8e53 90%);
+    border: none;
+    border-radius: 25px;
+    color: white;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 5px 2px rgba(255, 105, 135, .3);
+    margin: 10px;
 }
 
-.seleccionado {
-  border: 2px solid black;
-  background-color: yellow;
-  border-color: #ffc107;
-  color: #333;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin-top: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-table th, table td {
-  padding: 5px 10px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-table th {
-  background-color: #f2f2f2;
-  font-weight: bold;
-}
-
-table tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-table tr:hover {
-  background-color: #e9e9e9;
+button:hover, .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 10px 4px rgba(255, 105, 135, .4);
 }
 
 .delete-button {
-  background-color: #dc3545;
-  border-color: #dc3545;
+    background: linear-gradient(45deg, #d32f2f 30%, #f44336 90%);
+    box-shadow: 0 3px 5px 2px rgba(211, 47, 47, .3);
 }
 
 .delete-button:hover {
-  background-color: #c82333;
-  border-color: #bd2130;
+    box-shadow: 0 6px 10px 4px rgba(211, 47, 47, .4);
 }
 
 .reset-button {
-  background-color: #ffc107;
-  border-color: #ffc107;
+    background: linear-gradient(45deg, #ffc107 30%, #ff9800 90%);
+    box-shadow: 0 3px 5px 2px rgba(255, 193, 7, .3);
 }
 
 .reset-button:hover {
-  background-color: #e0a800;
-  border-color: #d39e00;
+    box-shadow: 0 6px 10px 4px rgba(255, 193, 7, .4);
 }
 
-button:not(:disabled):hover {
-  background-color: #0056b3;
-  border-color: #004085;
-}
 
-.container {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
+/* Form Styles */
 .form-group {
-  margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #fff;
 }
 
 .form-group input[type="text"] {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box; /* Include padding and border in element's total width and height */
-  font-size: 1em;
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 1em;
+    outline: none;
 }
 
-.btn-primary {
-  background-color: #007bff;
-  color: white;
-  border: 1px solid #007bff;
-  border-radius: 4px;
+.form-group input[type="text"]::placeholder {
+    color: #ddd;
 }
 
+/* Seat Layout */
 .seat-layout {
-  margin-top: 20px;
-}
-
-.seat-row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 5px;
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 10px;
 }
 
 .seat {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  flex-direction: column; /* Stack seat number and availability indicator */
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9em;
-  font-weight: bold;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin: 3px;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.seat.available {
-  background-color: #e0ffe0; /* Light green */
-  border-color: #a0d0a0;
-  cursor: pointer;
-}
-
-.seat.occupied {
-  background-color: #ffe0e0; /* Light red */
-  border-color: #d0a0a0;
-  cursor: not-allowed;
-  opacity: 0.6;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 10px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .seat.available:hover {
-  background-color: #c0f0c0;
+    background-color: rgba(76, 175, 80, 0.5);
+    transform: scale(1.1);
 }
 
-.seat.occupied:hover {
-  cursor: not-allowed; /* Ensure cursor doesn't change on hover */
+.seat.ocupado {
+    background-color: rgba(244, 67, 54, 0.5);
+    cursor: not-allowed;
 }
 
-.seat.selected {
-  border: 2px solid black;
-  background-color: yellow;
+.seat.seleccionado {
+    background-color: #ffeb3b;
+    color: #333;
+    border: 2px solid #fff;
 }
 
-header, footer {
-  background-color: #f2f2f2;
-  padding: 15px 0;
-  text-align: center;
-  width: 100%;
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-header h1 {
-  margin: 0;
-  color: #007bff;
+table th, table td {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
 }
 
-header p {
-  margin: 5px 0 0;
-  color: #555;
-  font-size: 1em;
+table th {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
-footer p {
-  margin: 0;
-  font-size: 0.9em;
-  color: #555;
+table tr:last-child td {
+    border-bottom: none;
 }
 
-
+/* Footer */
+footer {
+    margin-top: 30px;
+    color: #eee;
+}
