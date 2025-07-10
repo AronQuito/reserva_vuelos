@@ -1,3 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin - Reserva de Vuelos</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <header>
+    <h1>Admin - Reserva de Vuelos</h1>
+  </header>
+
+  <div class="container">
+    <h2>Mapa de Asientos</h2>
+    <div id="mapa"></div>
+    <button onclick="reiniciar()">Reiniciar Reservas</button>
+  </div>
+
+  <footer>
+    <p>&copy; 2023 Reserva de Vuelos</p>
+  </footer>
+
+  <script>
+  function actualizar() {
+    fetch("/consultar")
+      .then(res => res.json())
+      .then(data => {
+        const vuelo = data["vuelo_123"].asientos;
+        let html = '<table><tr><th>Asiento</th><th>Estado</th><th>Acción</th></tr>';
+        for (let asiento in vuelo) {
+          const estado = vuelo[asiento];
+          html += `<tr>
+                     <td>${asiento}</td>
+                     <td>${estado ? estado : "Disponible"}</td>
+                     <td>${estado ? `<button onclick="eliminar('${asiento}')" class="delete-button">❌</button>` : "-"}</td>
+                   </tr>`;
+        }
+        html += '</table>';
+        document.getElementById("mapa").innerHTML = html;
+      });
+  }
+
+  function eliminar(asiento) {
+    fetch("/eliminar", {
+      method: "POST",
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `vuelo=vuelo_123&asiento=${asiento}`
+    }).then(actualizar);
+  }
+
+  function reiniciar() {
+    fetch("/reiniciar", { method: "POST" }).then(actualizar);
+  }
+
+  setInterval(actualizar, 3000);
+  actualizar();
+  </script>
+</body>
+</html>
 <div id="mapa"></div>
 
 <script>
