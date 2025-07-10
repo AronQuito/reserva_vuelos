@@ -57,40 +57,72 @@
   </script>
 </body>
 </html>
-<div id="mapa"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>KTARI AIRLINE - Admin</title>
+ <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+ <header>
+ <div class="container">
+ <h1>KTARI AIRLINE - Administración</h1>
+ <p>Gestión de reservas de vuelos</p>
+ </div>
+ </header>
 
-<script>
-function actualizar() {
-  fetch("/consultar")
-    .then(res => res.json())
-    .then(data => {
-      const vuelo = data["vuelo_123"].asientos;
-      let html = '<table border="1"><tr><th>Asiento</th><th>Estado</th><th>Acción</th></tr>';
-      for (let asiento in vuelo) {
-        const estado = vuelo[asiento];
-        html += `<tr>
-                   <td>${asiento}</td>
-                   <td>${estado ? estado : "Disponible"}</td>
-                   <td>${estado ? `<button onclick="eliminar('${asiento}')">❌</button>` : "-"}</td>
-                 </tr>`;
-      }
-      html += '</table>';
-      document.getElementById("mapa").innerHTML = html;
-    });
-}
+ <main class="container">
+ <h2>Mapa de Asientos - Vuelo 123</h2>
+ <div id="mapa" class="admin-seat-map">
+ <!-- Seat map will be loaded here by JavaScript -->
+ </div>
+ <button onclick="reiniciar()" class="btn-secondary">Reiniciar Todas las Reservas</button>
+ </main>
 
-function eliminar(asiento) {
-  fetch("/eliminar", {
-    method: "POST",
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `vuelo=vuelo_123&asiento=${asiento}`
-  }).then(actualizar);
-}
+ <footer>
+ <div class="container">
+ <p>&copy; 2023 KTARI AIRLINE. Todos los derechos reservados.</p>
+ </div>
+ </footer>
 
-function reiniciar() {
-  fetch("/reiniciar", { method: "POST" }).then(actualizar);
-}
+ <script>
+ function actualizar() {
+ fetch("/consultar")
+ .then(res => res.json())
+ .then(data => {
+ const vuelo = data["vuelo_123"].asientos;
+ let html = '<table class="admin-table"><thead><tr><th>Asiento</th><th>Estado</th><th>Acción</th></tr></thead><tbody>';
+ for (let asiento in vuelo) {
+ const estado = vuelo[asiento];
+ html += `<tr>
+ <td>${asiento}</td>
+ <td>${estado ? estado : "Disponible"}</td>
+ <td>${estado ? `<button onclick="eliminar('${asiento}')" class="btn-danger">Cancelar Reserva</button>` : "-"}</td>
+ </tr>`;
+ }
+ html += '</tbody></table>';
+ document.getElementById("mapa").innerHTML = html;
+ });
+ }
 
-setInterval(actualizar, 3000);
-actualizar();
-</script>
+ function eliminar(asiento) {
+ fetch("/eliminar", {
+ method: "POST",
+ headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+ body: `vuelo=vuelo_123&asiento=${asiento}`
+ }).then(actualizar);
+ }
+
+ function reiniciar() {
+ if (confirm("¿Estás seguro de que quieres reiniciar todas las reservas? Esta acción no se puede deshacer.")) {
+ fetch("/reiniciar", { method: "POST" }).then(actualizar);
+ }
+ }
+
+ setInterval(actualizar, 3000);
+ actualizar();
+ </script>
+</body>
+</html>

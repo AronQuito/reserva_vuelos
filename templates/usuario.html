@@ -1,51 +1,90 @@
-<!-- templates/usuario.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Reserva de Asientos</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KTARI AIRLINE - Reserva tu Asiento</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>Selecciona tu Asiento</h1>
+  <header>
+    <div class="container">
+      <h1>KTARI AIRLINE</h1>
+      <p>Reserva tu próximo vuelo con nosotros</p>
+    </div>
+  </header>
 
-  <form id="formReserva" method="POST" action="/reservar">
-    <input type="hidden" name="vuelo" value="vuelo_123">
+  <main class="container">
+    <h2>Selecciona tu Asiento</h2>
 
-    <label for="nombre">Nombre:</label>
-    <input type="text" name="nombre" id="nombre" required>
-    <br><br>
+    <form id="formReserva" method="POST" action="/reservar">
+      <input type="hidden" name="vuelo" value="vuelo_123">
 
-    <div id="asientos"></div>
-    <input type="hidden" name="asiento" id="asientoSeleccionado">
+      <div class="form-group">
+        <label for="nombre">Nombre Completo:</label>
+        <input type="text" name="nombre" id="nombre" required>
+      </div>
 
-    <br><button type="submit">Reservar</button>
-  </form>
+      <div class="seat-map">
+        <h3>Mapa de Asientos</h3>
+        <div id="asientos" class="seat-layout"></div>
+      </div>
+
+      <input type="hidden" name="asiento" id="asientoSeleccionado">
+
+      <button type="submit" class="btn-primary">Confirmar Reserva</button>
+    </form>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2023 KTARI AIRLINE. Todos los derechos reservados.</p>
+    </div>
+  </footer>
 
   <script>
-    // Carga los asientos desde el servidor
+    // Fetch seats from the server
     fetch("/consultar")
       .then(res => res.json())
       .then(data => {
         const asientos = data["vuelo_123"].asientos;
+        const asientosDiv = document.getElementById("asientos");
         let html = "";
+        // Assuming a simple row layout, you might need to adjust this based on your data structure
+        const seatsPerRow = 10; // Example number of seats per row
+        let rowDiv = document.createElement('div');
+        rowDiv.classList.add('seat-row');
+        let seatCount = 0;
         for (let asiento in asientos) {
           const ocupado = asientos[asiento];
-          html += `<button type="button" class="${ocupado ? 'ocupado' : 'libre'}"
-                     onclick="seleccionar('${asiento}', this)"
-                     ${ocupado ? 'disabled' : ''}>${asiento}</button> `;
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.classList.add('seat');
+          button.classList.add(ocupado ? 'occupied' : 'available');
+          button.textContent = asiento;
+          button.onclick = () => seleccionar(asiento, button);
+          if (ocupado) {
+            button.disabled = true;
+          }
+          rowDiv.appendChild(button);
+          seatCount++;
+          if (seatCount % seatsPerRow === 0) {
+            asientosDiv.appendChild(rowDiv);
+            rowDiv = document.createElement('div');
+            rowDiv.classList.add('seat-row');
+          }
         }
-        document.getElementById("asientos").innerHTML = html;
-      });
-
-    // Manejo de seleccion de asiento
+        // Append the last row if it's not full
+        if (seatCount % seatsPerRow !== 0) {
+          asientosDiv.appendChild(rowDiv);
+        }
+      });\n
     function seleccionar(asiento, boton) {
-      document.querySelectorAll(".libre").forEach(btn => btn.classList.remove("seleccionado"));
+      document.querySelectorAll(".seat.selected").forEach(btn => btn.classList.remove("selected"));
       boton.classList.add("seleccionado");
       document.getElementById("asientoSeleccionado").value = asiento;
     }
 
-    // Validar antes de enviar
     document.getElementById("formReserva").addEventListener("submit", function(e) {
       const asiento = document.getElementById("asientoSeleccionado").value;
       const nombre = document.getElementById("nombre").value.trim();
